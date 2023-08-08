@@ -1,36 +1,53 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
-import { schema } from '@ioc:Adonis/Core/Validator'
-
-import Post from 'App/Models/Post'
+import PostValidation from 'App/Validators/PostValidation'
+import PostRepo from 'App/Repositories/PostRepo'
 
 export default class PostsController {
-  public async index() {
-    return Post.all()
+  // *** VIEW POST ***
+  public async index({ response }) {
+    try {
+      response.status(200)
+      return PostRepo.getPost()
+    } catch (error) {
+      response.badRequest(error.messages)
+    }
   }
+
+  // *** CREATE POST ***
   public async store({ request, response }: HttpContextContract) {
-    const newPostSchema = schema.create({
-      name: schema.string({ trim: true }),
-      post: schema.string(),
-    })
-    const payload = await request.validate({ schema: newPostSchema })
-    const post = await Post.create(payload)
-    response.status(201)
-    return post
+    try {
+      const payload = await request.validate(PostValidation)
+      const post = PostRepo.createPost(payload)
+      response.status(201)
+      return post
+    } catch (error) {
+      response.badRequest(error.messages)
+    }
   }
-  public async show({ params }: HttpContextContract) {
-    return Post.findOrFail(params.id)
+
+  // *** EDIT POST ***
+  public async update({ params, request, response }: HttpContextContract) {
+    try {
+      const payload = await request.validate(PostValidation)
+      const post = await PostRepo.findOrFailPost(params.id)
+      post.title = payload.title
+      post.post = payload.post
+      response.status(200)
+      return post.save()
+    } catch (error) {
+      response.badRequest(error.messages)
+    }
   }
-  public async update({ params, request }: HttpContextContract) {
-    const body = request.body()
-    const post = await Post.findOrFail(params.id)
-    post.name = body.name
-    post.post = body.post
-    return post.save()
-  }
+
+  // *** DELETE POST ***
   public async destroy({ params, response }: HttpContextContract) {
-    const post = await Post.findOrFail(params.id)
-    response.status(204)
-    return post.delete()
+    try {
+      const post = await PostRepo.findOrFailPost(params.id)
+      response.status(204)
+      await post.delete()
+      return post
+    } catch (error) {
+      response.badRequest(error.messages)
+    }
   }
 }
