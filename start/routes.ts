@@ -1,5 +1,8 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
-  Route.resource('/posts', 'PostsController').apiOnly()
-}).prefix('/api/user/1/')
+  Route.post('/register', 'UsersController.userRegisterCtrl')
+  Route.post('/login', 'UsersController.userLoginCtrl')
+  Route.delete('/:id', 'UsersController.userDeleteCtrl')
+  Route.get('/', 'UsersController.userCtrl')
+}).prefix('/api/v1/users')
