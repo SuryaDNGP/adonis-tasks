@@ -1,4 +1,5 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import Hash from '@ioc:Adonis/Core/Hash'
+import { BaseModel, column, beforeSave } from '@ioc:Adonis/Lucid/Orm'
 // import uuid from 'uuid/v4'
 
 export default class Accounts extends BaseModel {
@@ -15,4 +16,12 @@ export default class Accounts extends BaseModel {
 
   @column()
   public user_password: string
+
+  @beforeSave()
+  //Used bcrypt , 10 Saltrounds for hashing
+  public static async hashPassword(user: Accounts) {
+    if (user.$dirty.user_password) {
+      user.user_password = await Hash.make(user.user_password)
+    }
+  }
 }
