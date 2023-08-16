@@ -1,5 +1,6 @@
 import Hash from '@ioc:Adonis/Core/Hash'
 import { BaseModel, column, beforeSave } from '@ioc:Adonis/Lucid/Orm'
+
 // import uuid from 'uuid/v4'
 
 export default class Accounts extends BaseModel {

@@ -3,7 +3,6 @@ import AccountsValidator from 'App/Validators/AccountsValidation'
 import AccountsRepo from 'App/Repositories/AccountsRepo'
 import Accounts from 'App/Models/Accounts'
 import AppErrorException from 'App/Exceptions/AppErrorException'
-import Database from '@ioc:Adonis/Lucid/Database'
 import Hash from '@ioc:Adonis/Core/Hash'
 import generateToken from 'App/Utils/GenerateToken'
 
@@ -19,8 +18,7 @@ export default class UsersController {
         throw new AppErrorException('User already registered', 403)
       }
       const user = await Accounts.create(payload)
-      response.status(201)
-      return user.$original
+      return response.created(user)
     } catch (error) {
       throw new AppErrorException(error.message, error.status)
     }
@@ -35,13 +33,8 @@ export default class UsersController {
       const isPasswordMatch = await Hash.verify(userFound.user_password, payload.user_password)
       //   const isPasswordMatch = payload.user_password === userFound.user_password
       if (!isPasswordMatch) throw new AppErrorException('Invalid password', 404)
-      const data =
-        await Database.rawQuery(`SELECT Customers.customer_name,Products.product_name, Products.product_price 
-      FROM ((UserOrders 
-        INNER JOIN Products 
-        ON UserOrders.product_id = Products.product_id)
-          FULL JOIN Customers 
-            ON UserOrders.customer_id = Customers.customer_id)`)
+      const data = await AccountsRepo.getData(userFound.id)
+
       return {
         token: generateToken(userFound.id),
         userFound,
