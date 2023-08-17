@@ -27,12 +27,21 @@ export default class UserOrder extends BaseModel {
   @column()
   public quantity: number
 
-  @belongsTo(() => Accounts)
+  @belongsTo(() => Accounts, {
+    localKey: 'user_orders',
+    foreignKey: 'user_id',
+  })
   public accounts: BelongsTo<typeof Accounts>
 
-  @belongsTo(() => Customers)
+  @belongsTo(() => Customers, {
+    localKey: 'user_orders',
+    foreignKey: 'customer_id',
+  })
   public customers: BelongsTo<typeof Customers>
 
-  @belongsTo(() => Product)
-  public product: BelongsTo<typeof Product>
+  @belongsTo(() => Product, {
+    localKey: 'user_orders',
+    foreignKey: 'product_id',
+  })
+  public products: BelongsTo<typeof Product>
 }
