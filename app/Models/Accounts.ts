@@ -1,5 +1,14 @@
 import Hash from '@ioc:Adonis/Core/Hash'
-import { BaseModel, column, beforeSave } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  column,
+  beforeSave,
+  manyToMany,
+  ManyToMany,
+  hasMany,
+  HasMany,
+} from '@ioc:Adonis/Lucid/Orm'
+import UserOrder from './UserOrder'
 
 // import uuid from 'uuid/v4'
 
@@ -17,6 +26,9 @@ export default class Accounts extends BaseModel {
 
   @column()
   public user_password: string
+
+  @hasMany(() => UserOrder)
+  public userorders: HasMany<typeof UserOrder>
 
   @beforeSave()
   //Used bcrypt , 10 Saltrounds for hashing

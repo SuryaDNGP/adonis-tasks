@@ -34,11 +34,12 @@ export default class UsersController {
       //   const isPasswordMatch = payload.user_password === userFound.user_password
       if (!isPasswordMatch) throw new AppErrorException('Invalid password', 404)
       const data = await AccountsRepo.getData(userFound.id)
+      const data2 = await AccountsRepo.getAllData(userFound.id)
 
       return {
         token: generateToken(userFound.id),
         userFound,
-        data,
+        data2,
       }
     } catch (error) {
       throw new AppErrorException(error.message, error.status)

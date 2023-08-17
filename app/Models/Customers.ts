@@ -1,4 +1,5 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, manyToMany, ManyToMany, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import UserOrder from './UserOrder'
 
 export default class Customers extends BaseModel {
   public static table = 'customers'
@@ -13,4 +14,7 @@ export default class Customers extends BaseModel {
 
   @column()
   public customer_phone: string
+
+  @hasMany(() => UserOrder)
+  public userorders: HasMany<typeof UserOrder>
 }

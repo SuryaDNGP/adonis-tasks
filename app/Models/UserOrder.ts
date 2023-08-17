@@ -1,4 +1,14 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  BelongsTo,
+  ManyToMany,
+  belongsTo,
+  column,
+  manyToMany,
+} from '@ioc:Adonis/Lucid/Orm'
+import Accounts from './Accounts'
+import Product from './Product'
+import Customers from './Customers'
 
 export default class UserOrder extends BaseModel {
   public static table = 'userorders'
@@ -16,4 +26,13 @@ export default class UserOrder extends BaseModel {
 
   @column()
   public quantity: number
+
+  @belongsTo(() => Accounts)
+  public accounts: BelongsTo<typeof Accounts>
+
+  @belongsTo(() => Customers)
+  public customers: BelongsTo<typeof Customers>
+
+  @belongsTo(() => Product)
+  public product: BelongsTo<typeof Product>
 }
