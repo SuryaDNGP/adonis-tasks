@@ -33,13 +33,13 @@ export default class UsersController {
       const isPasswordMatch = await Hash.verify(userFound.user_password, payload.user_password)
       //   const isPasswordMatch = payload.user_password === userFound.user_password
       if (!isPasswordMatch) throw new AppErrorException('Invalid password', 404)
-      const data = await AccountsRepo.getData(userFound.id)
-      const data2 = await AccountsRepo.getAllData(userFound.id)
+      const data = await AccountsRepo.getData(userFound.user_id)
+      // const data2 = await AccountsRepo.getAllData()
 
       return {
-        token: generateToken(userFound.id),
+        token: generateToken(userFound.user_id),
         userFound,
-        data2,
+        data,
       }
     } catch (error) {
       throw new AppErrorException(error.message, error.status)

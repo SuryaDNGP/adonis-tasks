@@ -1,13 +1,5 @@
 import Hash from '@ioc:Adonis/Core/Hash'
-import {
-  BaseModel,
-  column,
-  beforeSave,
-  manyToMany,
-  ManyToMany,
-  hasMany,
-  HasMany,
-} from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, beforeSave, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
 import UserOrder from './UserOrder'
 
 // import uuid from 'uuid/v4'
@@ -16,7 +8,7 @@ export default class Accounts extends BaseModel {
   public static table = 'accounts'
 
   @column({ columnName: 'user_id', isPrimary: true })
-  public id: string
+  public user_id: string
 
   @column()
   public user_full_name: string
@@ -27,7 +19,10 @@ export default class Accounts extends BaseModel {
   @column()
   public user_password: string
 
-  @hasMany(() => UserOrder)
+  @hasMany(() => UserOrder, {
+    localKey: 'user_id',
+    foreignKey: 'user_id',
+  })
   public userorders: HasMany<typeof UserOrder>
 
   @beforeSave()
