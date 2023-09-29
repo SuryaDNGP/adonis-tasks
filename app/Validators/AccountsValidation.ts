@@ -3,14 +3,14 @@ import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator'
 
 class AccountsValidator {
   public registerSchema = schema.create({
-    user_full_name: schema.string(),
-    user_email_id: schema.string([rules.email()]),
-    user_password: schema.string(),
+    fullname: schema.string(),
+    email: schema.string([rules.email()]),
+    password: schema.string(),
   })
 
   public loginSchema = schema.create({
-    user_email_id: schema.string([rules.email()]),
-    user_password: schema.string(),
+    email: schema.string([rules.email()]),
+    password: schema.string(),
   })
 
   public messages: CustomMessages = {}

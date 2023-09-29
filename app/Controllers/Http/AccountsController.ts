@@ -11,7 +11,7 @@ export default class UsersController {
     try {
       const payload = await request.validate({ schema: AccountsValidator.registerSchema })
 
-      const userFound = await AccountsRepo.findBy('user_email_id', payload.user_email_id)
+      const userFound = await AccountsRepo.findBy('email', payload.email)
 
       //if user found throws a exception
       if (userFound) {
@@ -27,19 +27,22 @@ export default class UsersController {
   public async userLoginCtrl({ request }: HttpContextContract) {
     try {
       const payload = await request.validate({ schema: AccountsValidator.loginSchema })
-      const userFound = await AccountsRepo.findBy('user_email_id', payload.user_email_id)
+      const userFound = await AccountsRepo.findBy('email', payload.email)
       if (!userFound) throw new AppErrorException('User not found', 404)
+      console.log(userFound.password, payload.password)
+      const isPasswordMatch = await Hash.verify(userFound.password, payload.password)
 
-      const isPasswordMatch = await Hash.verify(userFound.user_password, payload.user_password)
       //   const isPasswordMatch = payload.user_password === userFound.user_password
       if (!isPasswordMatch) throw new AppErrorException('Invalid password', 404)
-      const data = await AccountsRepo.getData(userFound.user_id)
+      // const data = await AccountsRepo.getData()
       // const data2 = await AccountsRepo.getAllData()
 
       return {
-        token: generateToken(userFound.user_id),
-        userFound,
-        data,
+        status: 'success',
+
+        token: generateToken(userFound.id),
+        user_id: userFound?.id,
+        email: userFound?.email,
       }
     } catch (error) {
       throw new AppErrorException(error.message, error.status)
